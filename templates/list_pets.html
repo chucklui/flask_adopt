@@ -1,6 +1,20 @@
 {% extend 'base.html' %}
 {% block content %}
-{% for pet in pets %}
-{{pet}}
-{% endfor %}
+
+<ul>
+    {% for pet in pets %}
+    <li>
+        <img src="{{pet.photo_url}}" alt="">
+        <p>
+            <a href="">{{pet.name}}</a>
+
+            {% if {{pet.available}} %}
+                <b>is available!</b>
+            {% endif %}
+
+        </p>
+    </li>
+    {% endfor %}
+</ul>
+
 {% endblock %}

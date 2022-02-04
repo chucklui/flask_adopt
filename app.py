@@ -1,6 +1,7 @@
 """Flask app for adopt app."""
 from models import Pet
 from flask import Flask, render_template
+from forms import *
 
 from flask_debugtoolbar import DebugToolbarExtension
 
@@ -25,6 +26,9 @@ toolbar = DebugToolbarExtension(app)
 
 @app.get('/')
 def homepage():
-    """doc"""
+    """ Display list of pets on the home page """
     pets = Pet.query.all()
     return render_template('list_pets.html', pets = pets)
+
+@app.route('/add', methods=["GET", "POST"])
+def add_pet():
