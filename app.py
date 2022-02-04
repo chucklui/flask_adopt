@@ -45,8 +45,22 @@ def add_pet():
         # do stuff with data/insert to db
 
         flash(f"Added {name}")
-        return redirect("/add")
+        # redirect to homepage if validate
+        return redirect("/")
 
     else:
         return render_template(
             "add_pet_form.html", form=form)
+        
+@app.route('/<pet_id_number>',methods=["GET", "POST"])
+def show_pet_and_form(pet_id_number):
+    """doc"""
+
+    pet = Pet.query.get_or_404(pet_id_number)
+
+    name = pet.name
+    age = pet.age
+    species = pet.species
+    photo = pet.photo_url
+
+    return render_template('show_pet.html', pet = pet)
