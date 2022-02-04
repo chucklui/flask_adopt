@@ -1,7 +1,7 @@
 """Flask app for adopt app."""
 from models import Pet
-from flask import Flask, render_template
-from forms import *
+from flask import Flask, render_template, redirect, flash
+from forms import AddPetForm
 
 from flask_debugtoolbar import DebugToolbarExtension
 
@@ -32,3 +32,21 @@ def homepage():
 
 @app.route('/add', methods=["GET", "POST"])
 def add_pet():
+    """doc"""
+
+    form = AddPetForm()
+
+    if form.validate_on_submit():
+        name = form.name.data
+        species = form.species.data
+        photo_url = form.photo_url.data
+        age = form.age.data
+        notes = form.notes.data
+        # do stuff with data/insert to db
+
+        flash(f"Added {name}")
+        return redirect("/add")
+
+    else:
+        return render_template(
+            "add_pet_form.html", form=form)
