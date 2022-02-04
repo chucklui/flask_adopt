@@ -42,10 +42,18 @@ def add_pet():
         photo_url = form.photo_url.data
         age = form.age.data
         notes = form.notes.data
-        # do stuff with data/insert to db
+
+        pet = Pet(name=name, 
+                species=species,
+                photo_url=photo_url, 
+                age=age,notes=notes)
+
+        db.session.add(pet)
+        db.session.commit()
+
 
         flash(f"Added {name}")
-        # redirect to homepage if validate
+
         return redirect("/")
 
     else:
