@@ -11,6 +11,8 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = "secret"
 
+app.config['SQLALCHEMY_ECHO'] = True
+
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///adopt"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -24,11 +26,13 @@ db.create_all()
 
 toolbar = DebugToolbarExtension(app)
 
+
 @app.get('/')
 def homepage():
     """ Display list of pets on the home page """
     pets = Pet.query.all()
-    return render_template('list_pets.html', pets = pets)
+    return render_template('list_pets.html', pets=pets)
+
 
 @app.route('/add', methods=["GET", "POST"])
 def add_pet():
@@ -43,14 +47,13 @@ def add_pet():
         age = form.age.data
         notes = form.notes.data
 
-        pet = Pet(name=name, 
-                species=species,
-                photo_url=photo_url, 
-                age=age,notes=notes)
+        pet = Pet(name=name,
+                  species=species,
+                  photo_url=photo_url,
+                  age=age, notes=notes)
 
         db.session.add(pet)
         db.session.commit()
-
 
         flash(f"Added {name}")
 
@@ -59,16 +62,25 @@ def add_pet():
     else:
         return render_template(
             "add_pet_form.html", form=form)
-        
-@app.route('/<pet_id_number>',methods=["GET", "POST"])
+
+
+@app.route('/<int:pet_id_number>', methods=["GET", "POST"])
 def show_pet_and_form(pet_id_number):
     """doc"""
 
     pet = Pet.query.get_or_404(pet_id_number)
+    form = AddPetForm(obj=pet)
 
-    name = pet.name
-    age = pet.age
-    species = pet.species
-    photo = pet.photo_url
+    if form.validate_on_submit():
+        pet.name = form.name.data
+        pet.species = form.species.data
+        pet.photo_url = form.photo_url.data
+        pet.age = form.age.data
+        pet.notes = form.notes.data
 
-    return render_template('show_pet.html', pet = pet)
+        db.session.commit()
+        flash(f"Pet {pet.name} updated!")
+        return redirect("/")
+
+    else:
+        return render_template('show_pet.html', pet=pet, form=form)
