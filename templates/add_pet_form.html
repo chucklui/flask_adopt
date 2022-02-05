@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block title %}Add Pet Form{% endblock %}
 {% block content %}
 
 <form id="add_pet_form" method="POST">
@@ -17,7 +18,7 @@
   
     {% endfor %}
   
-    <button type="submit">Submit</button>
+    <button type="submit">Add a pet</button>
   </form>
 
 {% endblock %}
